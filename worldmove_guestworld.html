@@ -1,0 +1,84 @@
+<!-- 待機会場用 (待機会場→メイン会場) -->
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+   <meta charset="utf-8">
+   <script type="text/javascript">
+
+    /* ワールド移動する */
+    function jumpworld(worldid, ownerid) {
+
+		/**** 設定項目↓ ****/
+
+      // 〇 worldid : 移動先ワールドID
+      // 本関数の引数で指定
+
+      // 移動先インスタンスID : 任意数字1桁
+      var instanceid = document.getElementById("inputarea_id").innerHTML;
+
+      // ・parmisson : 移動先インスタンスのパーミッション
+      // friend+:hidden, friendsOnly:friends, invite+:private~canRequestInvite(), inviteOnly:private
+      var parmission = "private";
+
+      // 〇 ownerid : 移動先インスタンスのオーナーID : ユーザーIDを指定すればそのユーザーがオーナーのインスタンスを立てられる
+      // 本関数の引数で指定
+      /** ユーザーIDの調べ方(kohack_vさんのワールド検索サイト(http://teruaki-tsubokura.com/vrchat/)から引用)
+      /* 1. www.vrchat.com からVRChatアカウントでログイン
+      /* 2. www.vrchat.com/api/1/auth/user にアクセスし、表示されるJSONデータのID欄をコピーする。
+      **/
+
+      // パスワードのようなもの : 任意の指定30文字(a~zとA~Zと0~9)
+      var password = "abcDEFghi098JKLmnoPQR765stuVWX";
+
+	  /**** 設定項目↑ ****/
+
+      if (worldid == "" || worldid == undefined) {
+        // ワールドID入力エラー
+        document.getElementById("inputarea_id").innerHTML = "Error:Not input worldid";
+        return;
+      }
+
+      // インスタンスIDが未入力であればインスタンスIDを0にする
+      if (instanceid == "") instanceid = "0";
+
+      // friendOnly or inviteOnlyの場合、オーナーID必須
+      if (parmission== "friends" || parmission == "private") {
+
+        // オーナーIDが指定されていればそれを適用
+        if (ownerid != "" && ownerid != undefined) {
+          parmission += "("+ownerid+")";
+        } else {
+          // オーナーID入力エラー
+          document.getElementById("inputarea_id").innerHTML = "Error:Not input ownerid";
+          return;
+        }
+
+      }
+
+      engine.call("VRCSDK2.Networking.GoToRoom", worldid+":"+instanceid+"~"+parmission+"~nonce("+password+")");
+      //window.alert(worldid+":"+instanceid+"~"+parmission+"~nonce("+password+")");
+    }
+
+    /* 入力されたインスタンスIDを表示 */
+    function inputNumber(id) {
+
+        document.getElementById("inputarea_id").innerHTML = id;
+
+        // 連続入力ができない問題の対処
+        location.href = "#";
+    }
+
+    /* インスタンスIDを初期化する */
+    function clearNumber() {
+        document.getElementById("inputarea_id").innerHTML = "";
+    }
+
+   </script>
+ </head>
+ <body>
+  <h2>WebPanel Portal Controller</h2>
+  <h2>
+	インスタンスID : <span id="inputarea_id"></span>
+  </h2>
+ </body>
+</html>
